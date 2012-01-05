@@ -1,0 +1,6 @@
+name = DDU Demo
+description = DDU Demo
+core = 7.x
+
+files[] = ddudemo.module
+files[] = ddudemo_handler_price_edit.inc

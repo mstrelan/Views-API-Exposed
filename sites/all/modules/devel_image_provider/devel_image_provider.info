@@ -1,0 +1,10 @@
+name = Devel Image Provider
+description = Allow choose image provider in content generation
+package = Development
+core = 7.x
+; Information added by drupal.org packaging script on 2011-08-04
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "devel_image_provider"
+datestamp = "1312416840"
+

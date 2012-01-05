@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function ddudemo_menu() {
+  $items = array();
+  $items['admin/config/ddu-demo'] = array(
+    'title' => 'DDU Demo settings',
+    'description' => 'Adjust DDU Demo.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ddudemo_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'ddudemo.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_views_pre_view().
+ */
+function ddudemo_views_pre_view(&$view) {
+//  dpm($view->name . ': ' . __FUNCTION__);
+  if ($view->name == 'artwork') {
+    $new_display = variable_get('ddudemo_artwork_view_display', 'page_teasers');
+    if ($view->current_display == 'page_teasers') {
+      $original_path = $view->display_handler->get_option('path');
+      $view->set_display($new_display);
+      $view->display_handler->set_option('path', $original_path);
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_build().
+ */
+function ddudemo_views_pre_build(&$view) {
+//  dpm($view->name . ': ' . __FUNCTION__);
+
+  if ($view->name == 'artwork') {
+
+    $display_type = $view->display_handler->definition['name'];
+
+    // Change the number of items per page.
+    if ($display_type == 'page') {
+      $items = variable_get('ddudemo_artwork_view_items_per_page', 6);
+      $view->set_items_per_page($items);
+    }
+
+    // Remove the "required" option for the flag relationship when the artist
+    // argument is present.
+    elseif ($display_type == 'block') {
+      $what_to_show = variable_get('ddudemo_artwork_block_show', 'featured');
+      if ($what_to_show == 'any') {
+        if (isset($view->argument['field_artist_value'])) {
+          if ($view->argument['field_artist_value']->get_value()) {
+            $flag_join =& $view->relationship['flag_content_rel'];
+            $flag_join->options['required'] = FALSE;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_execute().
+ */
+function ddudemo_views_pre_execute(&$view) {
+//  dpm($view->name . ': ' . __FUNCTION__);
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function ddudemo_views_pre_render(&$view) {
+//  dpm($view->name . ': ' . __FUNCTION__);
+}
+
+/**
+ * Implements of hook_views_api().
+ */
+function ddudemo_views_api() {
+  return array(
+    'api' => 3.0,
+  );
+}

@@ -1,0 +1,11 @@
+name = Placekitten Image Provider
+description = Add placekitten as image provider in content generation
+package = Development
+core = 7.x
+dependencies[] = devel_image_provider
+; Information added by drupal.org packaging script on 2011-08-04
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "devel_image_provider"
+datestamp = "1312416840"
+

@@ -1,0 +1,8 @@
+name = Views filters populate
+description = "Allows one filter to populate other filters value."
+dependencies[] = views
+package = Views
+core = 7.x
+
+files[] = views_filters_populate.module
+files[] = views_filters_populate_handler_filter.inc
