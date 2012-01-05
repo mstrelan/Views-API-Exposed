@@ -20,14 +20,18 @@ function ddudemo_menu() {
  * Implements hook_views_pre_view().
  */
 function ddudemo_views_pre_view(&$view) {
-//  dpm($view->name . ': ' . __FUNCTION__);
-  if ($view->name == 'artwork') {
+  $display_type = $view->display_handler->definition['name'];
+
+  if ($view->name == 'artwork' && $display_type == 'page') {
+
+    $original_path = $view->display_handler->get_option('path');
     $new_display = variable_get('ddudemo_artwork_view_display', 'page_teasers');
-    if ($view->current_display == 'page_teasers') {
-      $original_path = $view->display_handler->get_option('path');
-      $view->set_display($new_display);
-      $view->display_handler->set_option('path', $original_path);
-    }
+    $items = variable_get('ddudemo_artwork_view_items_per_page', 6);
+
+    $view->set_display($new_display);
+    $view->display_handler->set_option('path', $original_path);
+    $view->set_items_per_page($items);
+
   }
 }
 
@@ -35,21 +39,11 @@ function ddudemo_views_pre_view(&$view) {
  * Implements hook_views_pre_build().
  */
 function ddudemo_views_pre_build(&$view) {
-//  dpm($view->name . ': ' . __FUNCTION__);
-
   if ($view->name == 'artwork') {
-
     $display_type = $view->display_handler->definition['name'];
-
-    // Change the number of items per page.
-    if ($display_type == 'page') {
-      $items = variable_get('ddudemo_artwork_view_items_per_page', 6);
-      $view->set_items_per_page($items);
-    }
-
     // Remove the "required" option for the flag relationship when the artist
     // argument is present.
-    elseif ($display_type == 'block') {
+    if ($display_type == 'block') {
       $what_to_show = variable_get('ddudemo_artwork_block_show', 'featured');
       if ($what_to_show == 'any') {
         if (isset($view->argument['field_artist_value'])) {
