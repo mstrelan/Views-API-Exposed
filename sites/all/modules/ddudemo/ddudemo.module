@@ -68,7 +68,10 @@ function ddudemo_views_pre_execute(&$view) {
  * Implements hook_views_pre_render().
  */
 function ddudemo_views_pre_render(&$view) {
-//  dpm($view->name . ': ' . __FUNCTION__);
+  $display_type = $view->display_handler->definition['name'];
+  if ($view->name == 'artwork' && $display_type == 'page') {
+    $view->attachment_before = '<p>' . ddudemo_views_filter_summary($view) . '</p>';
+  }
 }
 
 /**
@@ -78,4 +81,11 @@ function ddudemo_views_api() {
   return array(
     'api' => 3.0,
   );
+}
+
+function ddudemo_views_filter_summary(&$view) {
+  $count = count($view->result);
+  return format_plural($count, 
+    'Your search returned 1 result.',
+    'Your search returned @count results.');
 }
